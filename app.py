@@ -127,6 +127,10 @@ def fetch_and_map_risk_data(ticker, r, limit):
                         'Delta': delta,
                         'Gamma': gamma
                     })
+        
+        if not surface_records:
+            raise ValueError("Cloud API rate limit triggered: Zero valid contracts retrieved.")
+            
         return pd.DataFrame(surface_records), spot
 
     # 3. INTERCEPT INTERFACES AND DEPLOY SYNTHETIC ENGINE
