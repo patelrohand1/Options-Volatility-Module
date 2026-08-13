@@ -76,10 +76,16 @@ def calculate_historical_volatility(ticker_symbol, days=20):
     except Exception:
         return 0.20 # Fallback if API drops completely
 
+import requests
+
 @st.cache_data(ttl=300)
 def fetch_and_map_risk_data(ticker, r, limit):
-    # Let yfinance autonomously manage the browser impersonation
-    spy = yf.Ticker(ticker)
+    # Attempt to spoof browser headers to bypass Cloud IP WAF blocks
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    })
+    spy = yf.Ticker(ticker, session=session)
     
     # 1. Attempt to get Spot Price
     try:
